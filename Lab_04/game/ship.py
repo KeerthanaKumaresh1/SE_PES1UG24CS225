@@ -7,6 +7,7 @@ class Ship:
         self.rect = pygame.Rect(x-20, y-20, 40, 40)
         self.color = (80, 160, 240)
         self.trail = []
+        self.shield = False   # True after collecting a shield orb; absorbs one hit
 
     def move(self, keys, width, height):
         dx=dy=0
@@ -32,3 +33,9 @@ class Ship:
         pygame.draw.polygon(screen,self.color,pts)
         # engine glow
         pygame.draw.circle(screen,(255,180,60),(cx,cy+12),5)
+        # shield bubble
+        if self.shield:
+            bubble=pygame.Surface((64,64),pygame.SRCALPHA)
+            pygame.draw.circle(bubble,(80,220,255,50),(32,32),30)
+            pygame.draw.circle(bubble,(120,235,255,200),(32,32),30,3)
+            screen.blit(bubble,(cx-32,cy-32))

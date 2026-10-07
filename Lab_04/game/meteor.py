@@ -73,3 +73,36 @@ class Meteor:
                 int(self.y+(r*0.5)*math.sin(math.radians(self.rot+i*(360/7)))))
                for i,(cx,cy) in enumerate(pts)]
         pygame.draw.polygon(screen,tuple(max(0,c-40) for c in self.color),inner)
+
+
+class ShieldOrb:
+    """A glowing energy orb that drifts down the screen, swaying side to side."""
+    def __init__(self, width):
+        self.base_x = random.randint(60, width - 60)
+        self.x = self.base_x
+        self.y = -20
+        self.vy = random.uniform(1.2, 2.0)
+        self.t = random.uniform(0, 6.28)
+        self.radius = 13
+
+    def update(self):
+        self.y += self.vy
+        self.t += 0.05
+        self.x = self.base_x + math.sin(self.t) * 40
+
+    def off_screen(self, height):
+        return self.y > height + 30
+
+    def collides(self, rect):
+        dx, dy = self.x - rect.centerx, self.y - rect.centery
+        return (dx**2 + dy**2) ** 0.5 < self.radius + 16
+
+    def draw(self, screen):
+        pulse = 1 + 0.15 * math.sin(self.t * 3)
+        r = int(self.radius * pulse)
+        cx, cy = int(self.x), int(self.y)
+        glow = pygame.Surface((r*4, r*4), pygame.SRCALPHA)
+        pygame.draw.circle(glow, (80, 220, 255, 60), (r*2, r*2), r*2)
+        screen.blit(glow, (cx - r*2, cy - r*2))
+        pygame.draw.circle(screen, (80, 220, 255), (cx, cy), r)
+        pygame.draw.circle(screen, (220, 250, 255), (cx, cy), max(2, r // 2))
