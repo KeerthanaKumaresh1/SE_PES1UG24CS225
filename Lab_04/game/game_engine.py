@@ -56,13 +56,14 @@ class GameEngine:
             hit=next((m for m in self.meteors if l.hits(m)),None)
             if hit:
                 self.meteors.remove(hit)
+                self.meteors.extend(hit.split())   # large -> fragments, small -> nothing
                 self.lasers.remove(l)
         self.lasers=[l for l in self.lasers if not l.off_screen()]
         for m in self.meteors:
             m.update()
             if m.collides(self.ship.rect):
                 self.game_over=True
-        self.meteors=[m for m in self.meteors if not m.off_screen(HEIGHT)]
+        self.meteors=[m for m in self.meteors if not m.off_screen(WIDTH,HEIGHT)]
         self.score+=1
 
     def draw(self):
